@@ -201,13 +201,16 @@ QVariant QWebFrameAdapter::evaluateJavaScript(const QString &scriptSource)
     QVariant rc;
     if (scriptController) {
         int distance = 0;
-        ScriptValue value = scriptController->executeScript(ScriptSourceCode(scriptSource));
+        WebCore::ExceptionDetails details;
+        ScriptValue value = scriptController->executeScript(ScriptSourceCode(scriptSource), &details);
         JSC::ExecState* exec = scriptController->globalObject(mainThreadNormalWorld())->globalExec();
         JSValueRef* ignoredException = 0;
         exec->vm().apiLock().lock();
         JSValueRef valueRef = toRef(exec, value.jsValue());
         exec->vm().apiLock().unlock();
         rc = JSC::Bindings::convertValueToQVariant(toRef(exec), valueRef, QMetaType::Void, &distance, ignoredException);
+
+        qDebug() << "ExceptionDetails:" << QString(details.message) << details.lineNumber << details.columnNumber;
     }
     return rc;
 }
