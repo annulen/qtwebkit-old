@@ -40,13 +40,13 @@ OBJC_CLASS JSContext;
 struct NPObject;
 
 namespace JSC {
-    class JSGlobalObject;
-    class ExecState;
+class JSGlobalObject;
+class ExecState;
 
-    namespace Bindings {
-        class Instance;
-        class RootObject;
-    }
+namespace Bindings {
+class Instance;
+class RootObject;
+}
 }
 
 namespace WebCore {
@@ -90,8 +90,8 @@ public:
 
     static void getAllWorlds(Vector<RefPtr<DOMWrapperWorld> >&);
 
-    ScriptValue executeScript(const ScriptSourceCode&);
-    ScriptValue executeScript(const String& script, bool forceUserGesture = false);
+    ScriptValue executeScript(const ScriptSourceCode&, ExceptionDetails* = 0);
+    ScriptValue executeScript(const String& script, bool forceUserGesture = false, ExceptionDetails* = 0);
     ScriptValue executeScriptInWorld(DOMWrapperWorld*, const String& script, bool forceUserGesture = false);
 
     // Returns true if argument is a JavaScript URL.
@@ -101,8 +101,8 @@ public:
     // Darwin is an exception to this rule: it is OK to call this function from any thread, even reentrantly.
     static void initializeThreading();
 
-    ScriptValue evaluate(const ScriptSourceCode&);
-    ScriptValue evaluateInWorld(const ScriptSourceCode&, DOMWrapperWorld*);
+    ScriptValue evaluate(const ScriptSourceCode&, ExceptionDetails* = 0);
+    ScriptValue evaluateInWorld(const ScriptSourceCode&, DOMWrapperWorld*, ExceptionDetails* = 0);
 
     WTF::TextPosition eventHandlerPosition() const;
 

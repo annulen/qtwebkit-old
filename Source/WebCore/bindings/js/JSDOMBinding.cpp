@@ -142,7 +142,7 @@ JSC::JSValue jsArray(JSC::ExecState* exec, JSDOMGlobalObject* globalObject, Pass
     return JSC::constructArray(exec, 0, globalObject, list);
 }
 
-void reportException(ExecState* exec, JSValue exception, CachedScript* cachedScript)
+void reportException(ExecState* exec, JSValue exception, CachedScript* cachedScript, ExceptionDetails* exceptionDetails)
 {
     if (isTerminatedExecutionException(exception))
         return;
@@ -189,6 +189,13 @@ void reportException(ExecState* exec, JSValue exception, CachedScript* cachedScr
 
     ScriptExecutionContext* scriptExecutionContext = globalObject->scriptExecutionContext();
     scriptExecutionContext->reportException(errorMessage, lineNumber, columnNumber, exceptionSourceURL, callStack->size() ? callStack : 0, cachedScript);
+
+    if (exceptionDetails) {
+        exceptionDetails->message = errorMessage;
+        exceptionDetails->lineNumber = lineNumber;
+        exceptionDetails->columnNumber = columnNumber;
+        exceptionDetails->sourceURL = exceptionSourceURL;
+    }
 }
 
 void reportCurrentException(ExecState* exec)

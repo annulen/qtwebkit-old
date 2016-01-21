@@ -53,6 +53,13 @@ namespace WebCore {
 
 class DOMStringList;
 
+struct ExceptionDetails {
+    String message;
+    int lineNumber { 0 };
+    int columnNumber { 0 };
+    String sourceURL;
+};
+
     class CachedScript;
     class Frame;
     class KURL;
@@ -220,7 +227,7 @@ class DOMStringList;
 
     const JSC::HashTable* getHashTableForGlobalData(JSC::VM&, const JSC::HashTable* staticTable);
 
-    void reportException(JSC::ExecState*, JSC::JSValue exception, CachedScript* = 0);
+    void reportException(JSC::ExecState*, JSC::JSValue exception, CachedScript* = 0, ExceptionDetails* = 0);
     void reportCurrentException(JSC::ExecState*);
 
     // Convert a DOM implementation exception code into a JavaScript exception in the execution state.

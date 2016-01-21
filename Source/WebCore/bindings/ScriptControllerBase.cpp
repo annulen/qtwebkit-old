@@ -58,20 +58,20 @@ bool ScriptController::canExecuteScripts(ReasonForCallingCanExecuteScripts reaso
     return allowed;
 }
 
-ScriptValue ScriptController::executeScript(const String& script, bool forceUserGesture)
+ScriptValue ScriptController::executeScript(const String& script, bool forceUserGesture, ExceptionDetails* exceptionDetails)
 {
     UserGestureIndicator gestureIndicator(forceUserGesture ? DefinitelyProcessingUserGesture : PossiblyProcessingUserGesture);
-    return executeScript(ScriptSourceCode(script, m_frame->document()->url()));
+    return executeScript(ScriptSourceCode(script, m_frame->document()->url()), exceptionDetails);
 }
 
-ScriptValue ScriptController::executeScript(const ScriptSourceCode& sourceCode)
+ScriptValue ScriptController::executeScript(const ScriptSourceCode& sourceCode, ExceptionDetails* exceptionDetails)
 {
     if (!canExecuteScripts(AboutToExecuteScript) || isPaused())
         return ScriptValue();
 
     RefPtr<Frame> protect(m_frame); // Script execution can destroy the frame, and thus the ScriptController.
 
-    return evaluate(sourceCode);
+    return evaluate(sourceCode, exceptionDetails);
 }
 
 bool ScriptController::executeIfJavaScriptURL(const KURL& url, ShouldReplaceDocumentIfJavaScriptURL shouldReplaceDocumentIfJavaScriptURL)

@@ -114,7 +114,7 @@ JSDOMWindowShell* ScriptController::createWindowShell(DOMWrapperWorld* world)
     return windowShell.get();
 }
 
-ScriptValue ScriptController::evaluateInWorld(const ScriptSourceCode& sourceCode, DOMWrapperWorld* world)
+ScriptValue ScriptController::evaluateInWorld(const ScriptSourceCode& sourceCode, DOMWrapperWorld* world, ExceptionDetails* exceptionDetails)
 {
     const SourceCode& jsSourceCode = sourceCode.jsSourceCode();
     String sourceURL = jsSourceCode.provider()->url();
@@ -144,7 +144,7 @@ ScriptValue ScriptController::evaluateInWorld(const ScriptSourceCode& sourceCode
     InspectorInstrumentation::didEvaluateScript(cookie);
 
     if (evaluationException) {
-        reportException(exec, evaluationException, sourceCode.cachedScript());
+        reportException(exec, evaluationException, sourceCode.cachedScript(), exceptionDetails);
         m_sourceURL = savedSourceURL;
         return ScriptValue();
     }
@@ -153,9 +153,9 @@ ScriptValue ScriptController::evaluateInWorld(const ScriptSourceCode& sourceCode
     return ScriptValue(exec->vm(), returnValue);
 }
 
-ScriptValue ScriptController::evaluate(const ScriptSourceCode& sourceCode) 
+ScriptValue ScriptController::evaluate(const ScriptSourceCode& sourceCode, ExceptionDetails* exceptionDetails)
 {
-    return evaluateInWorld(sourceCode, mainThreadNormalWorld());
+    return evaluateInWorld(sourceCode, mainThreadNormalWorld(), exceptionDetails);
 }
 
 PassRefPtr<DOMWrapperWorld> ScriptController::createWorld()
